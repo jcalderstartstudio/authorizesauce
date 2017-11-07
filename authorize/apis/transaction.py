@@ -39,7 +39,7 @@ def parse_response(response):
     response = response.split(';')
     fields = {}
     for index, name in RESPONSE_FIELDS.items():
-        fields[name] = response[index]
+        fields[name] = response[index].replace('*', '')
     return fields
 
 
@@ -83,7 +83,7 @@ class TransactionAPI(object):
         except IOError as e:
             raise AuthorizeConnectionError(e)
         fields = parse_response(response)
-        if fields['response_code'] != '1':
+        if fields['response_code'] not in ['1', '*1*']:
             e = AuthorizeResponseError(
                 '{0} full_response={1!r}'.format(
                     fields['response_reason_text'], fields
